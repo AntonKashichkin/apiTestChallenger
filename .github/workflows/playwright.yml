@@ -24,7 +24,7 @@ jobs:
       - name: Запуск тестов
         run: npx playwright test 
       - name: Запускаем генерацию allure в одном файле
-        run: npm run allureFile
+        run: npm run report:generate
         if: always()
         continue-on-error: true
 
