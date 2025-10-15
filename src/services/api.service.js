@@ -1,4 +1,4 @@
-import { ChallengerService, ChallengesService, ToDos, ToDo, ToDoIdPositive, ToDoIdNegative, ToDosFilter } from './index';
+import { ChallengerService, ChallengesService, ToDos, ToDo, ToDoIdPositive, ToDoIdNegative, ToDosFilter, ToDosHead } from './index';
 
 export class Api {
   constructor(request) {
@@ -10,5 +10,6 @@ export class Api {
     this.todoidpositive = new ToDoIdPositive(request);
     this.todoidnegative = new ToDoIdNegative(request);
     this.todosfilter = new ToDosFilter(request);
+    this.todoshead = new ToDosHead(request);
   }
 }
