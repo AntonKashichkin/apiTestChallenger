@@ -116,6 +116,73 @@ test.describe('Tests using the facade & fixture pattern', () => {
     expect(r.errorMessages).toContain('Could not find field: priority');
   });
 
+  test('Todos put @put', async ({ api }, testinfo) => {
+    let response = await api.todos.put(token, testinfo);
+    const r = await response.json();
+    expect(response.status()).toBe(400);
+    expect(r.errorMessages).toContain('Cannot create todo with PUT due to Auto fields id');
+  });
 
+  test('Update title @post', async ({ api }, testinfo) => {
+    let response = await api.todos.updatingTask(token, testinfo);
+    const r = await response.json();
+    expect(response.status()).toBe(200);
+    expect(r.title).toBe('updated title');
+  });
 
+  test('Updating a task of a non-existent task @post', async ({ api }, testinfo) => {
+    let response = await api.todos.updatingTaskOfANonExistentTask(token, testinfo);
+    const r = await response.json();
+    expect(response.status()).toBe(404);
+    expect(r.errorMessages).toContain('No such todo entity instance with id == 15 found');
+  });
+
+  test('Fill change task @put', async ({ api }, testinfo) => {
+    let response = await api.todos.fullChangeTask(token, testinfo);
+    const r = await response.json();
+    expect(response.status()).toBe(200);
+    expect(r.title).toBe('Change title');
+    expect(r.description).toBe('Change description');
+    expect(r.doneStatus).toBe(false);
+  });
+
+  test('Partial update @put', async ({ api }, testinfo) => {
+    let response = await api.todos.partialUpdate(token, testinfo);
+    const r = await response.json();
+    expect(response.status()).toBe(200);
+    expect(r.title).toBe('partial update for title');
+    expect(r.description).toBe('');
+    expect(r.doneStatus).toBe(false);
+  });
+
+  test('No title @put', async ({ api }, testinfo) => {
+    let response = await api.todos.noTitle(token, testinfo);
+    const r = await response.json();
+    expect(response.status()).toBe(400);
+    expect(r.errorMessages).toContain('title : field is mandatory');
+  });
+
+  test('No amend id @put', async ({ api }, testinfo) => {
+    let response = await api.todos.noAmendId(token, testinfo);
+    const r = await response.json();
+    expect(response.status()).toBe(400);
+    expect(r.errorMessages).toContain('Can not amend id from 3 to 4');
+  });
+
+  test('Delete todo @delete', async ({ api }, testinfo) => {
+    let response = await api.todos.deleteTodo(token, testinfo);
+    expect(response.status()).toBe(200);
+    let r = await api.todoshead.headSearch(token, testinfo);
+    expect(r.status()).toBe(404);
+  });
+
+  test('Options @options', async ({ api }, testinfo) => {
+    let response = await api.todos.options(token, testinfo);
+    expect(response.status()).toBe(200);
+    const headers = response.headers();
+    expect(headers.allow).toContain('GET');
+    expect(headers.allow).toContain('POST');
+    expect(headers.allow).toContain('HEAD');
+    expect(headers.allow).toContain('OPTIONS');
+  });
 });

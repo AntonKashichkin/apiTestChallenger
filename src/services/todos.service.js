@@ -125,4 +125,121 @@ export class ToDos {
       return response;
     });
   }
+
+   async put(token, testinfo) {
+    return test.step('Put /todos/{id} (400)', async () => {
+      const response = await this.request.put(`${testinfo.project.use.api}/todos/15`, {
+        headers: { 'X-CHALLENGER': token },
+        data: {
+          title: 'create todo process payroll',
+          description: '',
+        },
+      });
+      return response;
+    });
+  }
+
+  async updatingTask(token, testinfo) {
+    return test.step('Updating a task)', async () => {
+      const response = await this.request.post(`${testinfo.project.use.api}/todos/10`, {
+        headers: { 'X-CHALLENGER': token },
+        data: {
+          title: 'updated title',
+          description: '',
+        },
+      });
+      return response;
+    });
+  }
+
+  async updatingTaskOfANonExistentTask(token, testinfo) {
+    return test.step('Updating a task)', async () => {
+      const response = await this.request.post(`${testinfo.project.use.api}/todos/15`, {
+        headers: { 'X-CHALLENGER': token },
+        data: {
+          title: 'updated title',
+          description: '',
+        },
+      });
+      return response;
+    });
+  }
+
+  async fullChangeTask(token, testinfo) {
+    return test.step('Updating a task)', async () => {
+      const response = await this.request.put(`${testinfo.project.use.api}/todos/1`, {
+        headers: { 'X-CHALLENGER': token },
+        data: {
+          title: 'Change title',
+          description: 'Change description',
+          doneStatus: false,
+        },
+      });
+      return response;
+    });
+  }
+
+   async partialUpdate(token, testinfo) {
+    return test.step('Updating a task)', async () => {
+      const response = await this.request.put(`${testinfo.project.use.api}/todos/3`, {
+        headers: { 'X-CHALLENGER': token },
+        data: {
+          title: "partial update for title",
+        },
+      });
+      return response;
+    });
+  }
+
+   async noTitle(token, testinfo) {
+    return test.step('Updating a task)', async () => {
+      const response = await this.request.put(`${testinfo.project.use.api}/todos/3`, {
+        headers: { 'X-CHALLENGER': token },
+        data: {
+          description: "partial update for description",
+        },
+      });
+      return response;
+    });
+  }
+
+  async noAmendId(token, testinfo) {
+    return test.step('Updating a task)', async () => {
+      const response = await this.request.put(`${testinfo.project.use.api}/todos/3`, {
+        headers: { 'X-CHALLENGER': token },
+        data: {
+          id: 4,
+          title: 'updated title',
+        }   
+      });
+      return response;
+    });
+  }
+
+  async deleteTodo(token, testinfo) {
+    return test.step('Updating a task)', async () => {
+      const response = await this.request.delete(`${testinfo.project.use.api}/todos/5`, {
+        headers: { 'X-CHALLENGER': token },
+       });
+      return response;
+    });
+  }
+
+  async options(token, testinfo) {
+    return test.step('Options)', async () => {
+      const response = await fetch(`${testinfo.project.use.api}/todos`, {
+        method: 'OPTIONS',
+        headers: { 'X-CHALLENGER': token },
+       });
+      return {
+        status: () => response.status,
+        statusText: () => response.statusText,
+        headers: () => Object.fromEntries(response.headers.entries()),
+        text: async () => response.text(),
+        ok: () => response.ok
+      };
+    });
+  }
 }
+
+

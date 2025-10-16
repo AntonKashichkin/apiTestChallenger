@@ -13,4 +13,13 @@ export class ToDosHead {
       return response;
     });
   }
+
+   async headSearch(token, testinfo) {
+    return test.step('HEAD /todos', async () => {
+      const response = await this.request.head(`${testinfo.project.use.api}/todos/5`, {
+        headers: { 'X-CHALLENGER': token },
+      });
+      return response;
+    });
+  }
 }
