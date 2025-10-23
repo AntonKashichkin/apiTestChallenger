@@ -185,4 +185,67 @@ test.describe('Tests using the facade & fixture pattern', () => {
     expect(headers.allow).toContain('HEAD');
     expect(headers.allow).toContain('OPTIONS');
   });
+
+  test('Todos XML  @get', async ({ api }, testinfo) => {
+    let xml = await api.todos.getXML(token, testinfo);
+    expect(xml).toContain('<doneStatus>false</doneStatus>');
+  });
+
+  test('Todos JSON  @get', async ({ api }, testinfo) => {
+    const response = await api.todos.getJSON(token, testinfo);
+    expect(response.status()).toBe(200);
+    const contentType = response.headers()['content-type'];
+    expect(contentType).toContain('application/json');
+  });
+
+  test('Todos ANY @get', async ({ api }, testinfo) => {
+    const response = await api.todos.getANY(token, testinfo);
+    expect(response.status()).toBe(200);
+    const contentType = response.headers()['content-type'];
+    expect(contentType).toContain('application/json');
+    const body = await response.json();
+    expect(body.todos.length).toBeGreaterThan(0);
+  });
+
+  test('Todos XMLandJSON  @get', async ({ api }, testinfo) => {
+    let xml = await api.todos.getXMLandJSON(token, testinfo);
+    expect(xml).toContain('<doneStatus>false</doneStatus>');
+  });
+
+  test('Todos no acept @get', async ({ api }, testinfo) => {
+    const response = await api.todos.getNoAccept(token, testinfo);
+    expect(response.status()).toBe(200);
+    const contentType = response.headers()['content-type'];
+    expect(contentType).toContain('application/json');
+  });
+
+  test('Todos gzip @get', async ({ api }, testinfo) => {
+    const response = await api.todos.getAcceptGzip(token, testinfo);
+    expect(response.status()).toBe(406);
+    const body = await response.json();
+    expect(body.errorMessages).toContain('Unrecognised Accept Type');
+  });
+
+  test('Create todos XML @post', async ({ api }, testinfo) => {
+    let { response, body } = await api.todos.createTodoXML(token, testinfo);
+    expect(response.headers()['content-type']).toContain('application/xml');
+    expect(body).toContain('<description>This task is completed</description>');
+    expect(response.status()).toBe(201);
+  });
+
+  test('Create todos JSON @post', async ({ api }, testinfo) => {
+    let { response, body } = await api.todos.createTodoJSON(token, testinfo);
+    expect(response.headers()['content-type']).toContain('application/json');
+    expect(body.title).toContain('create todo process payroll');
+    expect(response.status()).toBe(201);
+  });
+
+  test('Create todos unsupported Content-Type @post', async ({ api }, testinfo) => {
+    let { response, body } = await api.todos.createTodoUnsupportedContentType(token, testinfo);
+    expect(body.errorMessages).toContain('Unsupported Content Type - unsupported');
+    expect(response.status()).toBe(415);
+  });
+
+
+
 });
