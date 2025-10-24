@@ -4,6 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "testGET": "npx playwright test --grep @get",
+    "testPOST": "npx playwright test --grep @post",
+    "testOPTIONS": "npx playwright test --grep @options",
+    "testDELETE": "npx playwright test --grep @delete",
+    "testHEAD": "npx playwright test --grep @head",
     "test": "npx playwright test",
     "report": "npx playwright show-report",
     "report:generate": "allure generate allure-results --clean -o allure-report",
