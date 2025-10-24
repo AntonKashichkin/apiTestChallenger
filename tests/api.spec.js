@@ -3,7 +3,7 @@ import { test } from '../src/fixture/index';
 
 let token;
 
-test.describe('Tests using the facade & fixture pattern', () => {
+test.describe('API testing', () => {
   test.beforeAll(async ({ api }, testinfo) => {
     let r = await api.challenger.post(testinfo);
     const headers = r.headers();
@@ -12,22 +12,22 @@ test.describe('Tests using the facade & fixture pattern', () => {
     token = headers['x-challenger'];
   });
 
-  test('Challenges @get', async ({ api }, testinfo) => {
+  test('2. Challenges @get', async ({ api }, testinfo) => {
     let body = await api.challenges.get(token, testinfo);
     expect(body.challenges.length).toBe(59);
   });
 
-  test('Todos  @get', async ({ api }, testinfo) => {
+  test('3. Todos  @get', async ({ api }, testinfo) => {
     let body = await api.todos.get(token, testinfo);
     expect(body.todos.length).toBe(10);
   });
 
-  test('Todo  @get', async ({ api }, testinfo) => {
+  test('4. Todo  @get', async ({ api }, testinfo) => {
     let respTodo = await api.todo.get(token, testinfo);
     expect(respTodo.status()).toBe(404);
   });
 
-  test('Todos ID positive @get', async ({ api }, testinfo) => {
+  test('5. Todos ID positive @get', async ({ api }, testinfo) => {
     let respTodoId = await api.todoidpositive.get(token, testinfo);
     expect(respTodoId.status()).toBe(200);
     const responseBody = await respTodoId.json();
@@ -38,14 +38,14 @@ test.describe('Tests using the facade & fixture pattern', () => {
     expect(todo.description).toBe('');
   });
 
-  test('Todos ID negativ @get', async ({ api }, testinfo) => {
+  test('6. Todos ID negativ @get', async ({ api }, testinfo) => {
     let respTodoId = await api.todoidnegative.get(token, testinfo);
     const response = await respTodoId.json();
     expect(response.errorMessages.some((msg) => msg.includes('Could not find an instance with todos/'))).toBe(true);
     expect(respTodoId.status()).toBe(404);
   });
 
-  test('Todos filter @get', async ({ api }, testinfo) => {
+  test('7. Todos filter @get', async ({ api }, testinfo) => {
     await api.todos.createDoneTodo(token, testinfo);
     await api.todos.createNotDoneTodo(token, testinfo);
     let respTodosFilter = await api.todosfilter.get(token, testinfo);
@@ -55,12 +55,12 @@ test.describe('Tests using the facade & fixture pattern', () => {
     expect(todos.doneStatus).toBe(true);
   });
 
-  test('Todos  @head', async ({ api }, testinfo) => {
+  test('8. Todos  @head', async ({ api }, testinfo) => {
     let response = await api.todoshead.head(token, testinfo);
     expect(response.status()).toBe(200);
   });
 
-  test('Todos  @post', async ({ api }, testinfo) => {
+  test('9. Todos  @post', async ({ api }, testinfo) => {
     let response = await api.todos.createDoneTodo(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(201);
@@ -69,14 +69,14 @@ test.describe('Tests using the facade & fixture pattern', () => {
     expect(r.doneStatus).toBe(true);
   });
 
-  test('Todos doneStatus  @post', async ({ api }, testinfo) => {
+  test('10. Todos doneStatus  @post', async ({ api }, testinfo) => {
     let response = await api.todos.doneStatus(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(400);
     expect(r.errorMessages).toContain('Failed Validation: doneStatus should be BOOLEAN but was STRING');
   });
 
-  test('Todos title too long  @post', async ({ api }, testinfo) => {
+  test('11. Todos title too long  @post', async ({ api }, testinfo) => {
     let response = await api.todos.titleLonger(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(400);
@@ -85,7 +85,7 @@ test.describe('Tests using the facade & fixture pattern', () => {
     );
   });
 
-  test('Todos description too long  @post', async ({ api }, testinfo) => {
+  test('12. Todos description too long  @post', async ({ api }, testinfo) => {
     let response = await api.todos.descriptionLonger(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(400);
@@ -94,7 +94,7 @@ test.describe('Tests using the facade & fixture pattern', () => {
     );
   });
 
-  test('Todos max size content  @post', async ({ api }, testinfo) => {
+  test('13. Todos max size content  @post', async ({ api }, testinfo) => {
     let response = await api.todos.maxSizeContent(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(201);
@@ -102,42 +102,42 @@ test.describe('Tests using the facade & fixture pattern', () => {
     expect(r.description.length).toBe(200);
   });
 
-  test('Todos Content too long  @post', async ({ api }, testinfo) => {
+  test('14. Todos Content too long  @post', async ({ api }, testinfo) => {
     let response = await api.todos.contentTooLong(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(413);
     expect(r.errorMessages).toContain('Error: Request body too large, max allowed is 5000 bytes');
   });
 
-  test('Todos priority @post', async ({ api }, testinfo) => {
+  test('15. Todos priority @post', async ({ api }, testinfo) => {
     let response = await api.todos.priority(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(400);
     expect(r.errorMessages).toContain('Could not find field: priority');
   });
 
-  test('Todos put @put', async ({ api }, testinfo) => {
+  test('16. Todos put @put', async ({ api }, testinfo) => {
     let response = await api.todos.put(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(400);
     expect(r.errorMessages).toContain('Cannot create todo with PUT due to Auto fields id');
   });
 
-  test('Update title @post', async ({ api }, testinfo) => {
+  test('17. Update title @post', async ({ api }, testinfo) => {
     let response = await api.todos.updatingTask(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(200);
     expect(r.title).toBe('updated title');
   });
 
-  test('Updating a task of a non-existent task @post', async ({ api }, testinfo) => {
+  test('18. Updating a task of a non-existent task @post', async ({ api }, testinfo) => {
     let response = await api.todos.updatingTaskOfANonExistentTask(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(404);
     expect(r.errorMessages).toContain('No such todo entity instance with id == 15 found');
   });
 
-  test('Fill change task @put', async ({ api }, testinfo) => {
+  test('19. Fill change task @put', async ({ api }, testinfo) => {
     let response = await api.todos.fullChangeTask(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(200);
@@ -146,7 +146,7 @@ test.describe('Tests using the facade & fixture pattern', () => {
     expect(r.doneStatus).toBe(false);
   });
 
-  test('Partial update @put', async ({ api }, testinfo) => {
+  test('20. Partial update @put', async ({ api }, testinfo) => {
     let response = await api.todos.partialUpdate(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(200);
@@ -155,28 +155,28 @@ test.describe('Tests using the facade & fixture pattern', () => {
     expect(r.doneStatus).toBe(false);
   });
 
-  test('No title @put', async ({ api }, testinfo) => {
+  test('21. No title @put', async ({ api }, testinfo) => {
     let response = await api.todos.noTitle(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(400);
     expect(r.errorMessages).toContain('title : field is mandatory');
   });
 
-  test('No amend id @put', async ({ api }, testinfo) => {
+  test('22. No amend id @put', async ({ api }, testinfo) => {
     let response = await api.todos.noAmendId(token, testinfo);
     const r = await response.json();
     expect(response.status()).toBe(400);
     expect(r.errorMessages).toContain('Can not amend id from 3 to 4');
   });
 
-  test('Delete todo @delete', async ({ api }, testinfo) => {
+  test('23. Delete todo @delete', async ({ api }, testinfo) => {
     let response = await api.todos.deleteTodo(token, testinfo);
     expect(response.status()).toBe(200);
     let r = await api.todoshead.headSearch(token, testinfo);
     expect(r.status()).toBe(404);
   });
 
-  test('Options @options', async ({ api }, testinfo) => {
+  test('24. Options @options', async ({ api }, testinfo) => {
     let response = await api.todos.options(token, testinfo);
     expect(response.status()).toBe(200);
     const headers = response.headers();
@@ -186,19 +186,19 @@ test.describe('Tests using the facade & fixture pattern', () => {
     expect(headers.allow).toContain('OPTIONS');
   });
 
-  test('Todos XML  @get', async ({ api }, testinfo) => {
+  test('25. Todos XML  @get', async ({ api }, testinfo) => {
     let xml = await api.todos.getXML(token, testinfo);
     expect(xml).toContain('<doneStatus>false</doneStatus>');
   });
 
-  test('Todos JSON  @get', async ({ api }, testinfo) => {
+  test('26. Todos JSON  @get', async ({ api }, testinfo) => {
     const response = await api.todos.getJSON(token, testinfo);
     expect(response.status()).toBe(200);
     const contentType = response.headers()['content-type'];
     expect(contentType).toContain('application/json');
   });
 
-  test('Todos ANY @get', async ({ api }, testinfo) => {
+  test('27. Todos ANY @get', async ({ api }, testinfo) => {
     const response = await api.todos.getANY(token, testinfo);
     expect(response.status()).toBe(200);
     const contentType = response.headers()['content-type'];
@@ -207,45 +207,57 @@ test.describe('Tests using the facade & fixture pattern', () => {
     expect(body.todos.length).toBeGreaterThan(0);
   });
 
-  test('Todos XMLandJSON  @get', async ({ api }, testinfo) => {
+  test('28. Todos XMLandJSON  @get', async ({ api }, testinfo) => {
     let xml = await api.todos.getXMLandJSON(token, testinfo);
     expect(xml).toContain('<doneStatus>false</doneStatus>');
   });
 
-  test('Todos no acept @get', async ({ api }, testinfo) => {
+  test('29. Todos no acept @get', async ({ api }, testinfo) => {
     const response = await api.todos.getNoAccept(token, testinfo);
     expect(response.status()).toBe(200);
     const contentType = response.headers()['content-type'];
     expect(contentType).toContain('application/json');
   });
 
-  test('Todos gzip @get', async ({ api }, testinfo) => {
+  test('30. Todos gzip @get', async ({ api }, testinfo) => {
     const response = await api.todos.getAcceptGzip(token, testinfo);
     expect(response.status()).toBe(406);
     const body = await response.json();
     expect(body.errorMessages).toContain('Unrecognised Accept Type');
   });
 
-  test('Create todos XML @post', async ({ api }, testinfo) => {
+  test('31. Create todos XML @post', async ({ api }, testinfo) => {
     let { response, body } = await api.todos.createTodoXML(token, testinfo);
     expect(response.headers()['content-type']).toContain('application/xml');
     expect(body).toContain('<description>This task is completed</description>');
     expect(response.status()).toBe(201);
   });
 
-  test('Create todos JSON @post', async ({ api }, testinfo) => {
+  test('32. Create todos JSON @post', async ({ api }, testinfo) => {
     let { response, body } = await api.todos.createTodoJSON(token, testinfo);
     expect(response.headers()['content-type']).toContain('application/json');
     expect(body.title).toContain('create todo process payroll');
     expect(response.status()).toBe(201);
   });
 
-  test('Create todos unsupported Content-Type @post', async ({ api }, testinfo) => {
+  test('33. Create todos unsupported Content-Type @post', async ({ api }, testinfo) => {
     let { response, body } = await api.todos.createTodoUnsupportedContentType(token, testinfo);
     expect(body.errorMessages).toContain('Unsupported Content Type - unsupported');
     expect(response.status()).toBe(415);
   });
 
+  test('34. Return the progress data @get', async ({ api }, testInfo) => {
+    let response = await api.challenger.getExistingXchallenger(testInfo, token);
+    expect(response.status()).toBe(200);
+    const body = await response.json();
+    expect(body).toHaveProperty('xChallenger');
+  });
 
-
+  test('35. Restore that challengers progress into memory @put', async ({ api }, testInfo) => {
+    const data = await api.challenger.getExistingXchallenger(testInfo, token);
+    const bodyData = await data.json();
+    expect(bodyData).toHaveProperty('xChallenger');
+    let response = await api.challenger.putRestoreProgress(testInfo, token, bodyData);
+    expect(response.status()).toBe(200);
+  });
 });
