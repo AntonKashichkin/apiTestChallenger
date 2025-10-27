@@ -3,7 +3,3 @@ export * from './challenges.service';
 export * from './api.service';
 export * from './todos.service';
 export * from './todo.service';
-export * from './todos.id.positive.services';
-export * from './todos.id.negativ.services';
-export * from './todos.filter.service';
-export * from './todos.head.services';

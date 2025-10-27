@@ -343,4 +343,49 @@ export class ToDos {
       return { response, body };
     });
   }
+
+  async getFilter(token, testinfo) {
+    return test.step('GET /todos?doneStatus=true', async () => {
+      const response = await this.request.get(`${testinfo.project.use.api}/todos?doneStatus=true`, {
+        headers: { 'X-CHALLENGER': token },
+      });
+      return response;
+    });
+  }
+
+  async head(token, testinfo) {
+    return test.step('HEAD /todos', async () => {
+      const response = await this.request.head(`${testinfo.project.use.api}/todos`, {
+        headers: { 'X-CHALLENGER': token },
+      });
+      return response;
+    });
+  }
+
+   async headSearch(token, testinfo) {
+    return test.step('HEAD /todos', async () => {
+      const response = await this.request.head(`${testinfo.project.use.api}/todos/5`, {
+        headers: { 'X-CHALLENGER': token },
+      });
+      return response;
+    });
+  }
+
+  async getNegative(token, testinfo) {
+    return test.step('GET /todos/id negative', async () => {
+      const response = await this.request.get(`${testinfo.project.use.api}/todos/15`, {
+        headers: { 'X-CHALLENGER': token },
+      });
+      return response;
+    });
+  }
+  
+  async getPositive(token, testinfo) {
+    return test.step('GET /todos/id positive', async () => {
+      const response = await this.request.get(`${testinfo.project.use.api}/todos/5`, {
+        headers: { 'X-CHALLENGER': token },
+      });
+      return response;
+    });
+  } 
 }

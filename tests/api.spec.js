@@ -28,7 +28,7 @@ test.describe('API testing', () => {
   });
 
   test('5. Todos ID positive @get', async ({ api }, testinfo) => {
-    let respTodoId = await api.todoidpositive.get(token, testinfo);
+    let respTodoId = await api.todos.getPositive(token, testinfo);
     expect(respTodoId.status()).toBe(200);
     const responseBody = await respTodoId.json();
     const todo = responseBody.todos[0];
@@ -39,7 +39,7 @@ test.describe('API testing', () => {
   });
 
   test('6. Todos ID negativ @get', async ({ api }, testinfo) => {
-    let respTodoId = await api.todoidnegative.get(token, testinfo);
+    let respTodoId = await api.todos.getNegative(token, testinfo);
     const response = await respTodoId.json();
     expect(response.errorMessages.some((msg) => msg.includes('Could not find an instance with todos/'))).toBe(true);
     expect(respTodoId.status()).toBe(404);
@@ -48,7 +48,7 @@ test.describe('API testing', () => {
   test('7. Todos filter @get', async ({ api }, testinfo) => {
     await api.todos.createDoneTodo(token, testinfo);
     await api.todos.createNotDoneTodo(token, testinfo);
-    let respTodosFilter = await api.todosfilter.get(token, testinfo);
+    let respTodosFilter = await api.todos.getFilter(token, testinfo);
     const response = await respTodosFilter.json();
     const todos = response.todos[0];
     expect(respTodosFilter.status()).toBe(200);
@@ -56,7 +56,7 @@ test.describe('API testing', () => {
   });
 
   test('8. Todos  @head', async ({ api }, testinfo) => {
-    let response = await api.todoshead.head(token, testinfo);
+    let response = await api.todos.head(token, testinfo);
     expect(response.status()).toBe(200);
   });
 
@@ -172,7 +172,7 @@ test.describe('API testing', () => {
   test('23. Delete todo @delete', async ({ api }, testinfo) => {
     let response = await api.todos.deleteTodo(token, testinfo);
     expect(response.status()).toBe(200);
-    let r = await api.todoshead.headSearch(token, testinfo);
+    let r = await api.todos.headSearch(token, testinfo);
     expect(r.status()).toBe(404);
   });
 
